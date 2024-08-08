@@ -11,3 +11,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.btnhvr{
+  border: 2px solid transparent;
+}
+.btnhvr:hover {
+  cursor: pointer;
+  /* transform: scale(1.01); */
+  border:2px double black;
+}
+
+button{
+  z-index: 9990 !important;
+}
