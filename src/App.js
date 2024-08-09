@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { XR, createXRStore } from '@react-three/xr';
 import { OrbitControls, useGLTF } from '@react-three/drei';
 import glb from './asset.glb';
+import usdz from './asset.usdz';
 import "./App.css"
 import { Canvas } from '@react-three/fiber';
 // import { useFrame } from '@react-three/fiber';
@@ -83,7 +84,14 @@ function App() {
       ref={modelRef} object={scene} scale={scale} />;
   }
   const [color, setColor] = useState(null)
-
+  const Arview = () => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      window.location.href = usdz;
+    } else {
+      store.enterAR()
+    }
+  }
   return (
     <div style={{ height: '100vh', position: 'relative' }} className='overflow-hidden'>
       <img style={{ width: "160px", zIndex: 9990 }} className='position-absolute top-0 rounded-2 start-0' src='/logo.png' alt='logo' />
@@ -92,9 +100,7 @@ function App() {
         style={{
           padding: '7px 12px'
         }}
-        onClick={() => {
-          store.enterAR();
-        }}
+        onClick={Arview}
         className='btn btn-outline-info position-absolute top-50 m-2'
       >
         Enter AR
