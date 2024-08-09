@@ -8,6 +8,7 @@ import { Canvas } from '@react-three/fiber';
 // import { useFrame } from '@react-three/fiber';
 import CustomSlider from './useSliderColors/CustomSlider';
 
+import { Html } from '@react-three/drei';
 const store = createXRStore();
 
 function App() {
@@ -105,13 +106,14 @@ function App() {
       >
         Enter AR
       </button>
-      <CustomSlider colorItems={items} color={color} setColor={setColor} />
+
       {/* <div style={{ zIndex: 9999 }} className='position-absolute mt-4 d-flex bg-transparent justify-content-center align-content-center w-100 top-0 start-50 translate-middle-x'>
         <span onClick={() => setColor(null)} className='p-3 btnhvr rounded-circle  mx-2'>X</span >
         <span onClick={() => setColor('red')} className='p-3 btnhvr rounded-circle bg-danger mx-2'></span>
         <span onClick={() => setColor('blue')} className='p-3 btnhvr rounded-circle bg-info mx-2'></span>
         <span onClick={() => setColor('green')} className='p-3 btnhvr rounded-circle bg-success mx-2'></span >
         </div> */}
+      {/* <CustomSlider colorItems={items} color={color} setColor={setColor} /> */}
       <Canvas id='main-canvas' style={{ height: '100%' }}>
         <group position={[0, -1, 0]}>
           <ambientLight intensity={2} />
@@ -119,9 +121,18 @@ function App() {
           <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
           <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, -5, 5]} />
           <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, 5, 5]} />
-          <OrbitControls autoRotate />
-          <XR store={store}>
+          <OrbitControls
+          maxPolarAngle={Math.PI / 2.5}
+          maxDistance={5}
+          // minAzimuthAngle={Math.PI / 2.5}
+          // autoRotate 
+          />
+          <XR className="w-100 h-100" store={store}>
             <Model color={color} />
+            <Html
+              position={[0, 2, -1]} scale={[1, 1, 1]} rotation={[0, 0, 0]} transform distanceFactor={2}>
+              <CustomSlider colorItems={items} color={color} setColor={setColor} />
+            </Html>
           </XR>
         </group>
       </Canvas>
