@@ -1,9 +1,16 @@
-#main-canvas{
+#main-canvas {
   background-image: url("/public/floor.png");
   background-position: bottom center;
   background-size: cover;
 }
-img{
+
+img {
   /* mix-blend-mode:difference; */
-  mix-blend-mode:multiply;
+  mix-blend-mode: multiply;
+}
+
+@media only screen and (max-width: 768px) {
+  #main-canvas {
+    background-image: url("/public/floor2.png");
+  }
 }

@@ -17,7 +17,7 @@ const CustomSlider = ({colorItems}) => {
   // };
 
   return (
-    <div className="custom-slider-container position-absolute start-50 translate-middle-x bottom-0 overflow-scroll hidden-scrollbar" style={{ padding: '20px',zIndex:999,width:"fit-content" }}>
+    <div className="position-absolute start-50 translate-middle-x bottom-0 overflow-scroll hidden-scrollbar" style={{ padding: '20px',zIndex:999,width:"fit-content" }}>
       {/* <button className="scroll-button left" onClick={scrollLeft}>‹</button> */}
       <div className="custom-slider" ref={sliderRef}>
         {colorItems.map((item, index) => (
