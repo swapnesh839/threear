@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { XR, createXRStore } from '@react-three/xr';
 import { OrbitControls, useGLTF } from '@react-three/drei';
 import glb from './asset.glb';
@@ -7,6 +7,7 @@ import "./App.css"
 import { Canvas } from '@react-three/fiber';
 // import { useFrame } from '@react-three/fiber';
 import CustomSlider from './useSliderColors/CustomSlider';
+import MoonLoader from "react-spinners/MoonLoader";
 
 const store = createXRStore();
 
@@ -93,40 +94,47 @@ function App() {
     }
   }
   return (
-    <div style={{ height: '100vh', position: 'relative' }} className='overflow-hidden'>
-      <img style={{ width: "160px", zIndex: 9990 }} className='position-absolute top-0 rounded-2 start-0' src='/logo.png' alt='logo' />
-      <button
+    <Suspense fallback={<Loader />}>
+      <div style={{ height: '100vh', position: 'relative' }} className='overflow-hidden'>
+        <img style={{ width: "160px", zIndex: 9990 }} className='position-absolute top-0 rounded-2 start-0' src='/logo.png' alt='logo' />
+        <button
 
-        style={{
-          padding: '7px 12px'
-        }}
-        onClick={Arview}
-        className='btn btn-outline-info position-absolute top-50 m-2'
-      >
-        Enter AR
-      </button>
-      <CustomSlider colorItems={items} color={color} setColor={setColor} />
-      {/* <div style={{ zIndex: 9999 }} className='position-absolute mt-4 d-flex bg-transparent justify-content-center align-content-center w-100 top-0 start-50 translate-middle-x'>
+          style={{
+            padding: '7px 12px'
+          }}
+          onClick={Arview}
+          className='btn btn-outline-info position-absolute top-50 m-2'
+        >
+          Enter AR
+        </button>
+        <CustomSlider colorItems={items} color={color} setColor={setColor} />
+        {/* <div style={{ zIndex: 9999 }} className='position-absolute mt-4 d-flex bg-transparent justify-content-center align-content-center w-100 top-0 start-50 translate-middle-x'>
         <span onClick={() => setColor(null)} className='p-3 btnhvr rounded-circle  mx-2'>X</span >
         <span onClick={() => setColor('red')} className='p-3 btnhvr rounded-circle bg-danger mx-2'></span>
         <span onClick={() => setColor('blue')} className='p-3 btnhvr rounded-circle bg-info mx-2'></span>
         <span onClick={() => setColor('green')} className='p-3 btnhvr rounded-circle bg-success mx-2'></span >
         </div> */}
-      <Canvas id='main-canvas' style={{ height: '100%' }}>
-        <group position={[0, -1, 0]}>
-          <ambientLight intensity={2} />
-          <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
-          <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
-          <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, -5, 5]} />
-          <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, 5, 5]} />
-          <OrbitControls autoRotate />
-          <XR store={store}>
-            <Model color={color} />
-          </XR>
-        </group>
-      </Canvas>
-    </div>
+        <Canvas id='main-canvas' style={{ height: '100%' }}>
+          <group position={[0, -1, 0]}>
+            <ambientLight intensity={2} />
+            <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
+            <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
+            <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, -5, 5]} />
+            <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, 5, 5]} />
+            <OrbitControls autoRotate />
+            <XR store={store}>
+              <Model color={color} />
+            </XR>
+          </group>
+        </Canvas>
+      </div>
+    </Suspense>
   );
 }
 
+const Loader = () => {
+  return <div className='vh-100 w-100 d-flex justify-content-center align-items-center'>
+    <MoonLoader color='#19002D' size={150} />
+  </div>;
+}
 export default App;
