@@ -8,10 +8,13 @@ const store = createXRStore();
 
 function App() {
   function Model({ color }) {
-    const { scene } = useGLTF(glb);
+    const { scene } = useGLTF(glb, true, (progress) => {
+      console.log(`Loading: ${progress.loaded} / ${progress.total}`);
+    });
+    useGLTF.preload()
     const modelRef = useRef();
-    const [dragging, setDragging] = useState(false);
-    const [initialPointerPosition, setInitialPointerPosition] = useState([0, 0]);
+    // const [dragging, setDragging] = useState(false);
+    // const [initialPointerPosition, setInitialPointerPosition] = useState([0, 0]);
 
     // Change the color of the model's material
     useEffect(() => {
@@ -24,31 +27,31 @@ function App() {
       }
     }, [color, scene]);
 
-    useFrame(({ raycaster }) => {
-      if (dragging) {
-        modelRef.current.position.x = raycaster.mouse.x * 5; // Adjust the sensitivity
-        modelRef.current.position.y = raycaster.mouse.y * 5;
-      }
-    });
+    // useFrame(({ raycaster }) => {
+    //   if (dragging) {
+    //     modelRef.current.position.x = raycaster.mouse.x * 5; // Adjust the sensitivity
+    //     modelRef.current.position.y = raycaster.mouse.y * 5;
+    //   }
+    // });
 
-    return <primitive
-      onPointerDown={(e) => {
-        setDragging(true);
-        setInitialPointerPosition([e.clientX, e.clientY]);
-      }}
-      onPointerUp={() => setDragging(false)}
-      onPointerMove={(e) => {
-        if (dragging) {
-          const [initialX, initialY] = initialPointerPosition;
-          const deltaX = e.clientX - initialX;
-          const deltaY = e.clientY - initialY;
+    return <primitive 
+      // onPointerDown={(e) => {
+      //   setDragging(true);
+      //   setInitialPointerPosition([e.clientX, e.clientY]);
+      // }}
+      // onPointerUp={() => setDragging(false)}
+      // onPointerMove={(e) => {
+      //   if (dragging) {
+      //     const [initialX, initialY] = initialPointerPosition;
+      //     const deltaX = e.clientX - initialX;
+      //     const deltaY = e.clientY - initialY;
 
-          modelRef.current.position.x += deltaX * 0.01; // Adjust the sensitivity
-          modelRef.current.position.y -= deltaY * 0.01;
+      //     modelRef.current.position.x += deltaX * 0.01; // Adjust the sensitivity
+      //     modelRef.current.position.y -= deltaY * 0.01;
 
-          setInitialPointerPosition([e.clientX, e.clientY]);
-        }
-      }}
+      //     setInitialPointerPosition([e.clientX, e.clientY]);
+      //   }
+      // }}
       ref={modelRef} object={scene} scale={[.9, .9, .9]} />;
   }
   const [color, setColor] = useState(null)
