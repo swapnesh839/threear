@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { XR, createXRStore } from '@react-three/xr';
 import { OrbitControls, useGLTF } from '@react-three/drei';
 import glb from './asset.glb';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
+// import { useFrame } from '@react-three/fiber';
 
 const store = createXRStore();
 
