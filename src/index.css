@@ -24,3 +24,12 @@ code {
 button{
   z-index: 9990 !important;
 }
+.hidden-scrollbar {
+  /* overflow-x: auto; */
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
+}

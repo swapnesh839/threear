@@ -2,22 +2,24 @@ import React, { useEffect, useRef, useState } from 'react';
 import { XR, createXRStore } from '@react-three/xr';
 import { OrbitControls, useGLTF } from '@react-three/drei';
 import glb from './asset.glb';
+import "./App.css"
 import { Canvas } from '@react-three/fiber';
 // import { useFrame } from '@react-three/fiber';
+import CustomSlider from './useSliderColors/CustomSlider';
 
 const store = createXRStore();
 
 function App() {
   const items = [
-    <div className='bg-danger' onClick={() => { setColor('red') }}></div>,
-    <div className='bg-info' onClick={() => { setColor('#0DCAF0') }}></div>,
-    <div style={{ backgroundColor: '#6B38BB' }} onClick={() => { setColor('#6B38BB') }}></div>,
-    <div className='bg-success' onClick={() => { setColor('#198754') }}></div>,
-    <div style={{ backgroundColor: 'yellow', }} onClick={() => { setColor('yellow') }}></div>,
-    <div style={{ backgroundColor: 'skyblue' }} onClick={() => { setColor('skyblue') }}></div>,
-    <div style={{ backgroundColor: 'pink' }} onClick={() => { setColor('pink') }}></div>,
-    <div style={{ backgroundColor: '#A5AC7F' }} onClick={() => { setColor('#A5AC7F') }}></div>
-  ];
+    { className: 'bg-danger', onClick: () => setColor('red') },
+    { className: 'bg-info', onClick: () => setColor('#0DCAF0') },
+    { style: { backgroundColor: '#6B38BB' }, onClick: () => setColor('#6B38BB') },
+    { className: 'bg-success', onClick: () => setColor('#198754') },
+    { style: { backgroundColor: 'yellow' }, onClick: () => setColor('yellow') },
+    { style: { backgroundColor: 'skyblue' }, onClick: () => setColor('skyblue') },
+    { style: { backgroundColor: 'pink' }, onClick: () => setColor('pink') },
+    { style: { backgroundColor: '#A5AC7F' }, onClick: () => setColor('#A5AC7F') },
+  ]
   function Model({ color }) {
     const [scale, setScale] = useState([1, 1, 1]);
     const { scene } = useGLTF(glb, true, (progress) => {
@@ -84,7 +86,7 @@ function App() {
 
   return (
     <div style={{ height: '100vh', position: 'relative' }} className='overflow-hidden'>
-      <img style={{ width: "160px" }} className='position-absolute top-0 rounded-2 start-0' src='/logo.png' alt='logo' />
+      <img style={{ width: "160px", zIndex: 9990 }} className='position-absolute top-0 rounded-2 start-0' src='/logo.png' alt='logo' />
       <button
 
         style={{
@@ -97,22 +99,25 @@ function App() {
       >
         Enter AR
       </button>
+      <CustomSlider colorItems={items} color={color} setColor={setColor} />
       {/* <div style={{ zIndex: 9999 }} className='position-absolute mt-4 d-flex bg-transparent justify-content-center align-content-center w-100 top-0 start-50 translate-middle-x'>
         <span onClick={() => setColor(null)} className='p-3 btnhvr rounded-circle  mx-2'>X</span >
         <span onClick={() => setColor('red')} className='p-3 btnhvr rounded-circle bg-danger mx-2'></span>
         <span onClick={() => setColor('blue')} className='p-3 btnhvr rounded-circle bg-info mx-2'></span>
         <span onClick={() => setColor('green')} className='p-3 btnhvr rounded-circle bg-success mx-2'></span >
-      </div> */}
-      <Canvas style={{ height: '100%' }}>
-        <ambientLight intensity={2} />
-        <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
-        <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
-        <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, -5, 5]} />
-        <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, 5, 5]} />
-        <OrbitControls autoRotate />
-        <XR store={store}>
-          <Model color={color} />
-        </XR>
+        </div> */}
+      <Canvas id='main-canvas' style={{ height: '100%' }}>
+        <group position={[0, -2, 0]}>
+          <ambientLight intensity={2} />
+          <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
+          <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
+          <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, -5, 5]} />
+          <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, 5, 5]} />
+          <OrbitControls autoRotate />
+          <XR store={store}>
+            <Model color={color} />
+          </XR>
+        </group>
       </Canvas>
     </div>
   );
