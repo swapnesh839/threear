@@ -105,7 +105,7 @@ function App() {
           onClick={Arview}
           className='btn btn-info position-absolute start-50 translate-middle-x m-2'
         >
-          Enter AR
+          View AR
         </button>
         <CustomSlider colorItems={items} color={color} setColor={setColor} />
         {/* <div style={{ zIndex: 9999 }} className='position-absolute mt-4 d-flex bg-transparent justify-content-center align-content-center w-100 top-0 start-50 translate-middle-x'>
