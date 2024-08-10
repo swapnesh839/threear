@@ -100,10 +100,10 @@ function App() {
         <button
 
           style={{
-            padding: '7px 12px'
+            padding: '7px 12px',bottom:"70px"
           }}
           onClick={Arview}
-          className='btn btn-outline-info position-absolute top-50 m-2'
+          className='btn btn-info position-absolute start-50 translate-middle-x m-2'
         >
           Enter AR
         </button>
