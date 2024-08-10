@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Ar from './Ar'
+import "./App.css"
 
 const App = () => {
   const [isglview, setIsglview] = useState(false)
