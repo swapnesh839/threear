@@ -23,8 +23,8 @@ const CustomSlider = ({colorItems}) => {
         {colorItems.map((item, index) => (
           <div
             key={index}
-            className={`slider-item ${item.className || ''}`}
-            style={{ ...item.style, padding: '9px', borderRadius: '50%' }}
+            className={`slider-item rounded-2 ${item.className || ''}`}
+            style={{ ...item.style, padding: '9px' }}
             onClick={item.onClick}
           ></div>
         ))}
