@@ -115,7 +115,7 @@ function App() {
         <span onClick={() => setColor('green')} className='p-3 btnhvr rounded-circle bg-success mx-2'></span >
         </div> */}
         <Canvas id='main-canvas' style={{ height: '100%' }}>
-          <group position={[0, -1, 0]}>
+          <group position={[0, 0, 0]}>
             <ambientLight intensity={2} />
             <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
             <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
