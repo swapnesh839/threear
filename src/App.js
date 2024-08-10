@@ -116,13 +116,14 @@ function App() {
         </div> */}
         <Canvas id='main-canvas' style={{ height: '100%' }}>
           <group position={[0, 0, 0]}>
+            <XR store={store}>
             <ambientLight intensity={2} />
             <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
             <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
             <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, -5, 5]} />
             <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, 5, 5]} />
             <OrbitControls autoRotate />
-            <XR store={store}>
+            {/* <OrbitControls autoRotate /> */}
               <Model color={color} />
             </XR>
           </group>
