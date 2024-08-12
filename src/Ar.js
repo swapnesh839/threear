@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { XR, createXRStore } from '@react-three/xr';
-import { OrbitControls, useGLTF } from '@react-three/drei';
+import { Gltf, OrbitControls, useGLTF } from '@react-three/drei';
 import glb from './asset.glb';
 import usdz from './asset.usdz';
 import { GiExitDoor } from "react-icons/gi";
@@ -8,7 +8,7 @@ import { Canvas } from '@react-three/fiber';
 import CustomSlider from './useSliderColors/CustomSlider';
 import MoonLoader from "react-spinners/MoonLoader";
 
-const store = createXRStore();
+const store = createXRStore({depthSensing: true});
 
 function Ar({ setIsglview }) {
   const items = [
@@ -57,8 +57,8 @@ function Ar({ setIsglview }) {
       ref={modelRef} object={scene} scale={scale} />;
   }
   const [color, setColor] = useState(null)
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   const Arview = () => {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     if (isIOS) {
       window.location.href = usdz;
     } else {
@@ -83,7 +83,6 @@ function Ar({ setIsglview }) {
         <CustomSlider colorItems={items} color={color} setColor={setColor} />
         <Canvas id='main-canvas' style={{ height: '100%' }}>
           <group position={[0, 0, 0]}>
-            <XR store={store}>
               <ambientLight intensity={2} />
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
@@ -91,7 +90,11 @@ function Ar({ setIsglview }) {
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, 5, 5]} />
               <OrbitControls autoRotate />
               <Model color={color} />
-            </XR>
+              {!isIOS && (
+              <XR store={store}>
+                <Gltf src={glb} />
+              </XR>
+            )}
           </group>
         </Canvas>
       </div>
