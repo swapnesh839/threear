@@ -1,16 +1,18 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { XR, createXRStore } from '@react-three/xr';
-import { Gltf, OrbitControls, useGLTF } from '@react-three/drei';
+import { OrbitControls, useGLTF } from '@react-three/drei';
 import glb from './asset.glb';
 import usdz from './asset.usdz';
 import { GiExitDoor } from "react-icons/gi";
+// import "./Ar.css"
 import { Canvas } from '@react-three/fiber';
+// import { useFrame } from '@react-three/fiber';
 import CustomSlider from './useSliderColors/CustomSlider';
 import MoonLoader from "react-spinners/MoonLoader";
 
-const store = createXRStore({depthSensing: true});
+const store = createXRStore();
 
-function Ar({ setIsglview }) {
+function Ar({setIsglview}) {
   const items = [
     { className: 'bg-danger', onClick: () => setColor('red') },
     { className: 'bg-info', onClick: () => setColor('#0DCAF0') },
@@ -28,6 +30,9 @@ function Ar({ setIsglview }) {
     });
     useGLTF.preload()
     const modelRef = useRef();
+    // const [dragging, setDragging] = useState(false);
+    // const [initialPointerPosition, setInitialPointerPosition] = useState([0, 0]);
+
     // Change the color of the model's material
     useEffect(() => {
       if (color) {
@@ -53,27 +58,50 @@ function Ar({ setIsglview }) {
       return () => window.removeEventListener('resize', updateScale);
     }, [])
 
+    // useFrame(({ raycaster }) => {
+    //   if (dragging) {
+    //     modelRef.current.position.x = raycaster.mouse.x * 5; // Adjust the sensitivity
+    //     modelRef.current.position.y = raycaster.mouse.y * 5;
+    //   }
+    // });
+
     return <primitive
+      // onPointerDown={(e) => {
+      //   setDragging(true);
+      //   setInitialPointerPosition([e.clientX, e.clientY]);
+      // }}
+      // onPointerUp={() => setDragging(false)}
+      // onPointerMove={(e) => {
+      //   if (dragging) {
+      //     const [initialX, initialY] = initialPointerPosition;
+      //     const deltaX = e.clientX - initialX;
+      //     const deltaY = e.clientY - initialY;
+
+      //     modelRef.current.position.x += deltaX * 0.01; // Adjust the sensitivity
+      //     modelRef.current.position.y -= deltaY * 0.01;
+
+      //     setInitialPointerPosition([e.clientX, e.clientY]);
+      //   }
+      // }}
       ref={modelRef} object={scene} scale={scale} />;
   }
   const [color, setColor] = useState(null)
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   const Arview = () => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     if (isIOS) {
       window.location.href = usdz;
     } else {
       store.enterAR()
     }
   }
-
   return (
     <Suspense fallback={<Loader />}>
       <div style={{ height: '100vh', position: 'relative' }} className='overflow-hidden'>
         <img style={{ width: "160px", zIndex: 9990 }} className='position-absolute top-0 rounded-2 start-0' src='/logo.png' alt='logo' />
-        <GiExitDoor onClick={() => setIsglview(false)} size={40} style={{ zIndex: 9990, cursor: 'pointer', }} className='position-absolute border top-0 border-black rounded-circle p-1 end-0 m-3' src='/logo.png' alt='logo' />
+        <GiExitDoor onClick={() => setIsglview(false)} size={40} style={{zIndex: 9990,cursor: 'pointer', }} className='position-absolute border top-0 border-black rounded-circle p-1 end-0 m-3' src='/logo.png' alt='logo' />
         <button
           style={{
-            padding: '7px 12px', bottom: "70px"
+            padding: '7px 12px',bottom:"70px"
           }}
           onClick={Arview}
           className='btn btn-info position-absolute start-50 translate-middle-x m-2'
@@ -81,20 +109,24 @@ function Ar({ setIsglview }) {
           View AR
         </button>
         <CustomSlider colorItems={items} color={color} setColor={setColor} />
+        {/* <div style={{ zIndex: 9999 }} className='position-absolute mt-4 d-flex bg-transparent justify-content-center align-content-center w-100 top-0 start-50 translate-middle-x'>
+        <span onClick={() => setColor(null)} className='p-3 btnhvr rounded-circle  mx-2'>X</span >
+        <span onClick={() => setColor('red')} className='p-3 btnhvr rounded-circle bg-danger mx-2'></span>
+        <span onClick={() => setColor('blue')} className='p-3 btnhvr rounded-circle bg-info mx-2'></span>
+        <span onClick={() => setColor('green')} className='p-3 btnhvr rounded-circle bg-success mx-2'></span >
+        </div> */}
         <Canvas id='main-canvas' style={{ height: '100%' }}>
           <group position={[0, 0, 0]}>
-              <ambientLight intensity={2} />
-              <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
-              <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
-              <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, -5, 5]} />
-              <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, 5, 5]} />
-              <OrbitControls autoRotate />
+            <XR store={store}>
+            <ambientLight intensity={2} />
+            <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
+            <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
+            <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, -5, 5]} />
+            <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, 5, 5]} />
+            <OrbitControls autoRotate />
+            {/* <OrbitControls autoRotate /> */}
               <Model color={color} />
-              {!isIOS && (
-              <XR store={store}>
-                <Gltf src={glb} />
-              </XR>
-            )}
+            </XR>
           </group>
         </Canvas>
       </div>
