@@ -8,7 +8,7 @@ const store = createXRStore({
   controller: { teleportPointer: true },
 })
 
-export function App() {
+export default function App() {
   const [position, setPosition] = useState(new Vector3())
   return (
     <>
