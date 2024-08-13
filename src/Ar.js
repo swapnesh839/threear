@@ -1,12 +1,19 @@
 import { Canvas } from '@react-three/fiber'
 import { useHover, createXRStore, XR, XROrigin, TeleportTarget } from '@react-three/xr'
 import { useRef, useState } from 'react'
+import { useGLTF } from '@react-three/drei'
+import glb from "./asset.glb"
 import {  Vector3 } from 'three'
 
 const store = createXRStore({
   hand: { teleportPointer: true },
   controller: { teleportPointer: true },
 })
+
+const Modal = ()=>{
+
+  return <primitive object={useGLTF(glb).scene} position={[0, 0, 0]}/>
+}
 
 export default function App() {
   const [position, setPosition] = useState(new Vector3())
@@ -20,10 +27,11 @@ export default function App() {
           <XROrigin position={position} />
           <Cube />
           <TeleportTarget onTeleport={setPosition}>
-            <mesh scale={[10, 1, 10]} position={[0, -0.5, 0]}>
+            <Modal/>
+            {/* <mesh scale={[10, 1, 10]} position={[0, -0.5, 0]}>
               <boxGeometry />
               <meshBasicMaterial color="green" />
-            </mesh>
+            </mesh> */}
           </TeleportTarget>
         </XR>
       </Canvas>
