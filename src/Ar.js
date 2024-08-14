@@ -114,7 +114,7 @@ function Ar({ setIsglview }) {
     <Suspense fallback={<Loader />}>
       <div style={{ height: '100vh', position: 'relative' }} className='overflow-hidden'>
         <img style={{ width: "160px", zIndex: 9990 }} className='position-absolute top-0 rounded-2 start-0' src='/logo.png' alt='logo' />
-        <GiExitDoor onClick={() => setIsglview(false)} size={40} style={{ zIndex: 9990, cursor: 'pointer', }} className='position-absolute border top-0 border-black rounded-circle p-1 end-0 m-3' src='/logo.png' alt='logo' />
+        <GiExitDoor onClick={() => setIsglview(false)} size={40} style={{ zIndex: 9990, cursor: 'pointer' }} className='position-absolute d-none border top-0 border-black rounded-circle p-1 end-0 m-3' src='/logo.png' alt='logo' />
         <button
           style={{
             padding: '7px 12px', top: "10px"
