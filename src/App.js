@@ -1,5 +1,7 @@
 import React, {  useState } from 'react'
 import Ar from './Ar'
+import glb from './asset.glb';
+import usdz from './asset.usdz';
 import "./App.css"
 
 
@@ -32,7 +34,7 @@ const App = () => {
 
   return (
     <React.Fragment>
-      {isglview ? <Ar setIsglview={setIsglview} /> :
+      {isglview ? <Ar setIsglview={setIsglview} glb={glb} usdz={usdz} /> :
         <div className='vw-100 vh-100 position-relative d-flex'>
           <p className='m-auto fw-bold fs-1 p-2 text-center text-capitalize'>Experience WebGl and AR with Us</p>
           <button

@@ -1,28 +1,43 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { XR, createXRStore, useXRPlaneGeometry } from '@react-three/xr';
+import { XR, createXRStore } from '@react-three/xr';
 import { OrbitControls, useGLTF } from '@react-three/drei';
-import glb from './asset.glb';
-import usdz from './asset.usdz';
-// import { useXRPlanes } from '@react-three/xr'
 import { GiExitDoor } from "react-icons/gi";
-// import "./Ar.css"
 import { Canvas } from '@react-three/fiber';
-// import { useFrame } from '@react-three/fiber';
 import CustomSlider from './useSliderColors/CustomSlider';
 import MoonLoader from "react-spinners/MoonLoader";
 
-// const store = createXRStore();
-function RedWall() {
-  const geometry = useXRPlaneGeometry();
-  return (
-    <mesh geometry={geometry}>
-      <meshBasicMaterial color="red" />
-    </mesh>
-  );
-}
-const store = createXRStore({ detectPlanes: { wall: RedWall } });
+const store = createXRStore()
+function Ar({ setIsglview, glb, usdz }) {
+  const [isInAR, setIsInAR] = useState(false);
+  useEffect(() => {
+    const handleSessionStart = () => setIsInAR(true);
+    const handleSessionEnd = () => setIsInAR(false);
 
-function Ar({setIsglview}) {
+    // Check if session is available before adding event listeners
+    if (store.session) {
+      store.session.addEventListener('sessionstart', handleSessionStart);
+      store.session.addEventListener('sessionend', handleSessionEnd);
+    }else{
+      alert("There is no session available");
+    }
+
+
+
+    return () => {
+      if (store.session) {
+        store.session.removeEventListener('sessionstart', handleSessionStart);
+        store.session.removeEventListener('sessionend', handleSessionEnd);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    alert(`isInAR: ${isInAR}`);
+    // if (isInAR) {
+      
+    // }
+  }, [isInAR]);
+
   const items = [
     { className: 'bg-danger', onClick: () => setColor('red') },
     { className: 'bg-info', onClick: () => setColor('#0DCAF0') },
@@ -35,15 +50,9 @@ function Ar({setIsglview}) {
   ]
   function Model({ color }) {
     const [scale, setScale] = useState([1, 1, 1]);
-    const { scene } = useGLTF(glb, true, (progress) => {
-      console.log(`Loading: ${progress.loaded} / ${progress.total}`);
-    });
-    useGLTF.preload()
+    const { scene } = useGLTF(glb)
+    
     const modelRef = useRef();
-    // const [dragging, setDragging] = useState(false);
-    // const [initialPointerPosition, setInitialPointerPosition] = useState([0, 0]);
-
-    // Change the color of the model's material
     useEffect(() => {
       if (color) {
         scene.traverse((child) => {
@@ -75,25 +84,7 @@ function Ar({setIsglview}) {
     //   }
     // });
 
-    return <primitive
-      // onPointerDown={(e) => {
-      //   setDragging(true);
-      //   setInitialPointerPosition([e.clientX, e.clientY]);
-      // }}
-      // onPointerUp={() => setDragging(false)}
-      // onPointerMove={(e) => {
-      //   if (dragging) {
-      //     const [initialX, initialY] = initialPointerPosition;
-      //     const deltaX = e.clientX - initialX;
-      //     const deltaY = e.clientY - initialY;
-
-      //     modelRef.current.position.x += deltaX * 0.01; // Adjust the sensitivity
-      //     modelRef.current.position.y -= deltaY * 0.01;
-
-      //     setInitialPointerPosition([e.clientX, e.clientY]);
-      //   }
-      // }}
-      ref={modelRef} object={scene} scale={scale}  />;
+    return <primitive ref={modelRef} object={scene} scale={scale} />;
   }
   const [color, setColor] = useState(null)
   const Arview = () => {
@@ -109,10 +100,10 @@ function Ar({setIsglview}) {
     <Suspense fallback={<Loader />}>
       <div style={{ height: '100svh', position: 'relative' }} className='overflow-hidden'>
         <img style={{ width: "160px", zIndex: 9990 }} className='position-absolute top-0 rounded-2 start-0' src='/logo.png' alt='logo' />
-        <GiExitDoor onClick={() => setIsglview(false)} size={40} style={{zIndex: 9990,cursor: 'pointer', }} className='position-absolute border top-0 border-black rounded-circle p-1 end-0 m-3' src='/logo.png' alt='logo' />
+        <GiExitDoor onClick={() => setIsglview(false)} size={40} style={{ zIndex: 9990, cursor: 'pointer', }} className='position-absolute border top-0 border-black rounded-circle p-1 end-0 m-3' src='/logo.png' alt='logo' />
         <button
           style={{
-            padding: '7px 12px',bottom:"70px"
+            padding: '7px 12px', bottom: "70px"
           }}
           onClick={Arview}
           className='btn btn-info position-absolute start-50 translate-middle-x m-2'
@@ -129,13 +120,13 @@ function Ar({setIsglview}) {
         <Canvas id='main-canvas' style={{ height: '100%' }}>
           <group position={[0, 0, 0]}>
             <XR store={store}>
-            <ambientLight intensity={2} />
-            <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
-            <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
-            <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, -5, 5]} />
-            <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, 5, 5]} />
-            <OrbitControls autoRotate />
-            {/* <OrbitControls autoRotate /> */}
+              <ambientLight intensity={2} />
+              <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
+              <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
+              <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, -5, 5]} />
+              <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, 5, 5]} />
+              <OrbitControls autoRotate />
+              {/* <OrbitControls autoRotate /> */}
               <Model color={color} />
             </XR>
           </group>
