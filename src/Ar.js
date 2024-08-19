@@ -23,15 +23,16 @@ function Ar({ setIsglview }) {
   //   { style: { backgroundColor: 'pink' }, onClick: () => setColor('pink') },
   //   { style: { backgroundColor: '#A5AC7F' }, onClick: () => setColor('#A5AC7F') },
   // ]
+  const modelRef = useRef();
   function Model({ color }) {
     const [scale, setScale] = useState([1, 1, 1]);
+
     const { scene } = useGLTF(glb, true, (progress) => {
       console.log(`Loading: ${progress.loaded} / ${progress.total}`);
     });
-    console.log(scale);
+    // console.log(scale);
 
     useGLTF.preload()
-    const modelRef = useRef();
     // const [dragging, setDragging] = useState(false);
     // const [initialPointerPosition, setInitialPointerPosition] = useState([0, 0]);
 
@@ -66,26 +67,10 @@ function Ar({ setIsglview }) {
     //     modelRef.current.position.y = raycaster.mouse.y * 5;
     //   }
     // });
+    console.log(scale);
+
 
     return <primitive
-
-      // onPointerDown={(e) => {
-      //   setDragging(true);
-      //   setInitialPointerPosition([e.clientX, e.clientY]);
-      // }}
-      // onPointerUp={() => setDragging(false)}
-      // onPointerMove={(e) => {
-      //   if (dragging) {
-      //     const [initialX, initialY] = initialPointerPosition;
-      //     const deltaX = e.clientX - initialX;
-      //     const deltaY = e.clientY - initialY;
-
-      //     modelRef.current.position.x += deltaX * 0.01; // Adjust the sensitivity
-      //     modelRef.current.position.y -= deltaY * 0.01;
-
-      //     setInitialPointerPosition([e.clientX, e.clientY]);
-      //   }
-      // }}
       ref={modelRef} object={scene}
       // rotatetion={[12, 0, 0]}
       scale={[2, 2, 2]}
@@ -103,22 +88,55 @@ function Ar({ setIsglview }) {
       store.enterAR()
     }
   }
-  const ShowAlert = () => {
-    alert("Pizza Example Wiith Clickable function")
-  }
 
   const [showinfo, setshowinfo] = useState(false)
-  console.log(setshowinfo);
+  const Alert = () => {
+    // alert("Pizza Example Wiith Clickable function")
+    setshowinfo(e => !e)
+  }
+  // console.log(setshowinfo);
 
   return (
     <Suspense fallback={<Loader />}>
       <div style={{ height: '100svh', position: 'relative' }} className='overflow-hidden'>
+        {showinfo && <div className='position-absolute p-50 top-50 start-50 rounded-3 translate-middle bg-white' style={{ zIndex: 999999999999999 }}>
+          <div className='p-3' style={{ minWidth: "400px", maxWidth: "100%", height: "300px", maxHeight: "100%" }}>
+            <button
+              onClick={() => Alert()}
+              className='position-absolute top-0 end-0'
+              style={{
+                backgroundColor: "transparent",
+                border: "0px solid black",
+                borderRadius: "50%",
+                width: "40px",
+                height: "40px",
+                zIndex: 99999999,
+                fontSize: "16px",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              X
+            </button>
+            <div className='w-100 h-100 p-1'>
+              <div className='row'>
+                <p className='text-center mx-auto w-100 border-bottom mt-2'>Presented By Realitiq XR</p>
+                <div>
+                  <p className='mx-auto w-100 mt-2 fs-3'>The dish:</p>
+                  <span className='text-center mx-auto w-100 mt-2'>The original pizza margherita with tomato sauce, mozarella and a touch of fresh basil.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
         <img style={{ width: "160px", zIndex: 9990 }} className='position-absolute top-0 rounded-2 start-0' src='/logo.png' alt='logo' />
         <GiExitDoor onClick={() => setIsglview(false)} size={40} style={{ zIndex: 9990, cursor: 'pointer' }} className='position-absolute d-none border top-0 border-black rounded-circle p-1 end-0 m-3' src='/logo.png' alt='logo' />
         <button
           style={{
-            padding: '7px 12px', top: "10px"
+            padding: '7px 12px', bottom: "10px"
           }}
+
           onClick={Arview}
           className='btn btn-info position-absolute start-50 translate-middle-x m-2'
         >
@@ -132,7 +150,9 @@ function Ar({ setIsglview }) {
         <span onClick={() => setColor('green')} className='p-3 btnhvr rounded-circle bg-success mx-2'></span >
         </div> */}
         <Canvas id='main-canvas' style={{ height: '100%' }}>
-          <group position={[0, 0, 0]} rotation={[Math.PI / 6, 0, 0]} >
+          <group position={[0, 0, 0]}
+          // rotation={[Math.PI / 6, 0, 0]}
+          >
             <XR store={store}>
               <ambientLight intensity={2} />
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
@@ -140,8 +160,18 @@ function Ar({ setIsglview }) {
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, -5, 5]} />
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, 5, 5]} />
               <OrbitControls />
-              {!showinfo && <Html transform position={[0, 1, -4]} zIndexRange={[0, 0]} style={{ zIndex: 100 }}>
-                <div
+              <Html as='div'
+                occlude={[modelRef]}
+                // fullscreen={showinfo}
+                style={{ userSelect: 'none', transform: 'scale(0.5)' }}
+                // zIndexRange={[0, 0]}
+                // renderOrder={1}
+                // eps={0.01}
+                className={"draiHtml"}
+                // sprite
+                position={showinfo ? [0, 0, 0] : [0, 1, -1]}
+                transform={!showinfo} >
+                {!showinfo && <div
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -151,6 +181,7 @@ function Ar({ setIsglview }) {
                     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
                     // width: "200px",
                     justifyContent: "space-between",
+                    zIndex: 2
                   }}
                 >
                   <div style={{ flex: 1, marginRight: "10px" }}>
@@ -163,7 +194,7 @@ function Ar({ setIsglview }) {
                   </div>
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <button
-                      onClick={() => ShowAlert()}
+                      onClick={() => Alert()}
                       style={{
                         backgroundColor: "transparent",
                         border: "1px solid black",
@@ -179,8 +210,8 @@ function Ar({ setIsglview }) {
                       i
                     </button>
                   </div>
-                </div>
-              </Html>}
+                </div>}
+              </Html>
               {/* <OrbitControls autoRotate /> */}
               <Model color={color} />
             </XR>

@@ -1,16 +1,21 @@
 #main-canvas {
-  background-image: url("/public/floor.png");
-  background-position: bottom center;
-  background-size: cover;
+  background-image: url("/public/pizzabackground.png");
+  background-position: center center;
+  background-size: contain;
+  background-color: rgba(36, 35, 35, 0.5);
+  background-blend-mode: overlay;
+  /* background-blend-mode:saturation; */
 }
-
-img {
-  /* mix-blend-mode:difference; */
+/* * {
+  transition: visiibility 0.s ease-in-out; 
+} */
+/* img {
+  mix-blend-mode:difference;
   mix-blend-mode: multiply;
-}
+} */
 
-@media only screen and (max-width: 768px) {
+/* @media only screen and (max-width: 768px) {
   #main-canvas {
     background-image: url("/public/floor2.png");
   }
-}
+} */
