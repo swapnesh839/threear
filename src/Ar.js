@@ -2,7 +2,7 @@ import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { XR, createXRStore } from '@react-three/xr';
 import { Html, OrbitControls, useGLTF } from '@react-three/drei';
 import glb from './pizza.glb';
-import usdz from './asset.usdz';
+import usdz from './Pizza.usdz';
 import { GiExitDoor } from "react-icons/gi";
 // import "./Ar.css"
 import { Canvas } from '@react-three/fiber';
