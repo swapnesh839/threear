@@ -72,7 +72,7 @@ function Ar({ setIsglview }) {
 
     return <primitive
       ref={modelRef} object={scene}
-      // rotatetion={[12, 0, 0]}
+      rotation={[Math.PI / 10, 0, 0]}
       scale={[2, 2, 2]}
     // scale={scale}
     />;
