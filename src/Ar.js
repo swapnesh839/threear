@@ -34,7 +34,7 @@ function Ar({setIsglview}) {
     { style: { backgroundColor: '#A5AC7F' }, onClick: () => setColor('#A5AC7F') },
   ]
   function Model({ color }) {
-    // const [scale, setScale] = useState([1, 1, 1]);
+    const [scale, setScale] = useState([1, 1, 1]);
     const { scene } = useGLTF(glb, true, (progress) => {
       console.log(`Loading: ${progress.loaded} / ${progress.total}`);
     });
@@ -54,19 +54,19 @@ function Ar({setIsglview}) {
       }
     }, [color, scene]);
 
-    // const updateScale = () => {
-    //   const width = window.innerWidth;
-    //   const height = window.innerHeight;
-    //   // Example scaling factor: adjust as needed
-    //   const scaleFactor = Math.min(width, height) / 1000;
+    const updateScale = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      // Example scaling factor: adjust as needed
+      const scaleFactor = Math.min(width, height) / 1000;
 
-    //   setScale([scaleFactor, scaleFactor, scaleFactor]);
-    // };
-    // useEffect(() => {
-    //   updateScale();
-    //   window.addEventListener('resize', updateScale);
-    //   return () => window.removeEventListener('resize', updateScale);
-    // }, [])
+      setScale([scaleFactor, scaleFactor, scaleFactor]);
+    };
+    useEffect(() => {
+      updateScale();
+      window.addEventListener('resize', updateScale);
+      return () => window.removeEventListener('resize', updateScale);
+    }, [])
 
     // useFrame(({ raycaster }) => {
     //   if (dragging) {
@@ -93,7 +93,7 @@ function Ar({setIsglview}) {
       //     setInitialPointerPosition([e.clientX, e.clientY]);
       //   }
       // }}
-      ref={modelRef} object={scene}  />;
+      ref={modelRef} object={scene} scale={scale}  />;
   }
   const [color, setColor] = useState(null)
   const Arview = () => {
