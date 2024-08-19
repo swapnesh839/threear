@@ -1,8 +1,9 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { XR, createXRStore } from '@react-three/xr';
+import { XR, createXRStore, useXRPlaneGeometry } from '@react-three/xr';
 import { OrbitControls, useGLTF } from '@react-three/drei';
 import glb from './asset.glb';
 import usdz from './asset.usdz';
+// import { useXRPlanes } from '@react-three/xr'
 import { GiExitDoor } from "react-icons/gi";
 // import "./Ar.css"
 import { Canvas } from '@react-three/fiber';
@@ -10,7 +11,16 @@ import { Canvas } from '@react-three/fiber';
 import CustomSlider from './useSliderColors/CustomSlider';
 import MoonLoader from "react-spinners/MoonLoader";
 
-const store = createXRStore();
+// const store = createXRStore();
+function RedWall() {
+  const geometry = useXRPlaneGeometry();
+  return (
+    <mesh geometry={geometry}>
+      <meshBasicMaterial color="red" />
+    </mesh>
+  );
+}
+const store = createXRStore({ detectPlanes: { wall: RedWall } });
 
 function Ar({setIsglview}) {
   const items = [
@@ -24,7 +34,7 @@ function Ar({setIsglview}) {
     { style: { backgroundColor: '#A5AC7F' }, onClick: () => setColor('#A5AC7F') },
   ]
   function Model({ color }) {
-    const [scale, setScale] = useState([1, 1, 1]);
+    // const [scale, setScale] = useState([1, 1, 1]);
     const { scene } = useGLTF(glb, true, (progress) => {
       console.log(`Loading: ${progress.loaded} / ${progress.total}`);
     });
@@ -44,19 +54,19 @@ function Ar({setIsglview}) {
       }
     }, [color, scene]);
 
-    const updateScale = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      // Example scaling factor: adjust as needed
-      const scaleFactor = Math.min(width, height) / 1000;
+    // const updateScale = () => {
+    //   const width = window.innerWidth;
+    //   const height = window.innerHeight;
+    //   // Example scaling factor: adjust as needed
+    //   const scaleFactor = Math.min(width, height) / 1000;
 
-      setScale([scaleFactor, scaleFactor, scaleFactor]);
-    };
-    useEffect(() => {
-      updateScale();
-      window.addEventListener('resize', updateScale);
-      return () => window.removeEventListener('resize', updateScale);
-    }, [])
+    //   setScale([scaleFactor, scaleFactor, scaleFactor]);
+    // };
+    // useEffect(() => {
+    //   updateScale();
+    //   window.addEventListener('resize', updateScale);
+    //   return () => window.removeEventListener('resize', updateScale);
+    // }, [])
 
     // useFrame(({ raycaster }) => {
     //   if (dragging) {
@@ -83,7 +93,7 @@ function Ar({setIsglview}) {
       //     setInitialPointerPosition([e.clientX, e.clientY]);
       //   }
       // }}
-      ref={modelRef} object={scene} scale={scale} />;
+      ref={modelRef} object={scene}  />;
   }
   const [color, setColor] = useState(null)
   const Arview = () => {
@@ -94,6 +104,7 @@ function Ar({setIsglview}) {
       store.enterAR()
     }
   }
+  // const wallplane = useXRPlanes()
   return (
     <Suspense fallback={<Loader />}>
       <div style={{ height: '100vh', position: 'relative' }} className='overflow-hidden'>

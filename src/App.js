@@ -1,33 +1,34 @@
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import Ar from './Ar'
 import "./App.css"
 
+
 const App = () => {
-  const [isglview, setIsglview] = useState(false)
+  const [isglview, setIsglview] = useState(true)
 
-  useEffect(() => {
-    const element = document.documentElement;
+  // useEffect(() => {
+  //   const element = document.documentElement;
 
-    if (isglview) {
-      if (element.requestFullscreen) {
-        element.requestFullscreen();
-      } else if (element.webkitRequestFullscreen) { /* Safari */
-        element.webkitRequestFullscreen();
-      } else if (element.msRequestFullscreen) { /* IE11 */
-        element.msRequestFullscreen();
-      }
-    } else {
-      if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) { /* Safari */
-          document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { /* IE11 */
-          document.msExitFullscreen();
-        }
-      }
-    }
-  }, [isglview]);
+  //   if (isglview) {
+  //     if (element.requestFullscreen) {
+  //       element.requestFullscreen();
+  //     } else if (element.webkitRequestFullscreen) { /* Safari */
+  //       element.webkitRequestFullscreen();
+  //     } else if (element.msRequestFullscreen) { /* IE11 */
+  //       element.msRequestFullscreen();
+  //     }
+  //   } else {
+  //     if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+  //       if (document.exitFullscreen) {
+  //         document.exitFullscreen();
+  //       } else if (document.webkitExitFullscreen) { /* Safari */
+  //         document.webkitExitFullscreen();
+  //       } else if (document.msExitFullscreen) { /* IE11 */
+  //         document.msExitFullscreen();
+  //       }
+  //     }
+  //   }
+  // }, [isglview]);
 
   return (
     <React.Fragment>
