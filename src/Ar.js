@@ -70,12 +70,15 @@ function Ar({ setIsglview }) {
     console.log(scale);
 
 
-    return <primitive
+    return <group>
+    <primitive
       ref={modelRef} object={scene}
       rotation={[Math.PI / 10, 0, 0]}
       scale={[2, 2, 2]}
     // scale={scale}
-    />;
+    />
+    <OrbitControls />
+  </group>
   }
   const [color, setColor] = useState(null)
   console.log(setColor);
@@ -159,7 +162,7 @@ function Ar({ setIsglview }) {
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, -5, 5]} />
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[-5, 5, 5]} />
-              <OrbitControls />
+
               <Html as='div'
                 occlude={[modelRef]}
                 // fullscreen={showinfo}
