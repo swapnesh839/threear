@@ -1,5 +1,5 @@
 import React, { Suspense,  useEffect, useRef, useState } from 'react';
-import { IfInSessionMode, XR, createXRStore } from '@react-three/xr';
+import { IfInSessionMode, XR, createXRStore, useXR } from '@react-three/xr';
 import { Html, OrbitControls, useGLTF } from '@react-three/drei';
 import glb from './pizza.glb';
 import usdz from './Pizza.usdz';
@@ -9,6 +9,7 @@ import { Canvas } from '@react-three/fiber';
 // import { useFrame } from '@react-three/fiber';
 // import CustomSlider from './useSliderColors/CustomSlider';
 import MoonLoader from "react-spinners/MoonLoader";
+import { Vector3 } from 'three';
 
 const store = createXRStore();
 
@@ -84,6 +85,61 @@ function Ar({ setIsglview }) {
   }
   const [color, setColor] = useState(null)
   console.log(setColor);
+  function GestureHandler() {
+    const { controllers,
+      //  update 
+      } = useXR();
+    const modelRef = useRef();
+  
+    // Pinch-to-zoom
+    function handlePinch(event) {
+      if (event.type === 'pinch') {
+        const scale = event.scale;
+        modelRef.current.scale.set(scale, scale, scale);
+      }
+    }
+  
+    // Drag-to-move
+    function handlePan(event) {
+      if (event.type === 'pan') {
+        const delta = new Vector3(event.deltaX, event.deltaY, 0);
+        modelRef.current.position.add(delta.multiplyScalar(0.01));
+      }
+    }
+  
+    // Rotate-to-spin
+    function handleRotate(event) {
+      if (event.type === 'rotate') {
+        const rotation = event.rotation;
+        modelRef.current.rotation.y += rotation * 0.01;
+      }
+    }
+  
+    // Update gesture handlers on each frame
+    React.useEffect(() => {
+      if (controllers) {
+        controllers.forEach(controller => {
+          controller.addEventListener('pinch', handlePinch);
+          controller.addEventListener('pan', handlePan);
+          controller.addEventListener('rotate', handleRotate);
+        });
+  
+        return () => {
+          controllers.forEach(controller => {
+            controller.removeEventListener('pinch', handlePinch);
+            controller.removeEventListener('pan', handlePan);
+            controller.removeEventListener('rotate', handleRotate);
+          });
+        };
+      }
+    }, [controllers]);
+  
+    return (
+      <group ref={modelRef}>
+        {/* Your 3D model or objects here */}
+      </group>
+    );
+  }
 
   const Arview = () => {
 
@@ -97,25 +153,14 @@ function Ar({ setIsglview }) {
 
   const [showinfo, setshowinfo] = useState(false)
   const Alert = () => {
-    // alert("Pizza Example Wiith Clickable function")
     setshowinfo(e => !e)
   }
-  // console.log(setshowinfo);
   const [isARSupported, setIsARSupported] = useState(null);
 
   useEffect(() => {
     async function checkSupport() {
-      console.log(navigator.xr);
-      // console.log( navigator.xr?.isSessionSupported());
-      
       if (navigator.xr ) {
         setIsARSupported(true);
-        // try {
-        //   // const supported = await navigator.xr.isSessionSupported('immersive-ar');
-        // } catch (error) {
-        //   console.error('Error checking AR support:', error);
-        //   setIsARSupported(false);
-        // }
       } else {
         setIsARSupported(false);
       }
@@ -170,18 +215,11 @@ function Ar({ setIsglview }) {
         >
           View AR
         </button>}
-        {/* <CustomSlider colorItems={items} color={color} setColor={setColor} /> */}
-        {/* <div style={{ zIndex: 9999 }} className='position-absolute mt-4 d-flex bg-transparent justify-content-center align-content-center w-100 top-0 start-50 translate-middle-x'>
-        <span onClick={() => setColor(null)} className='p-3 btnhvr rounded-circle  mx-2'>X</span >
-        <span onClick={() => setColor('red')} className='p-3 btnhvr rounded-circle bg-danger mx-2'></span>
-        <span onClick={() => setColor('blue')} className='p-3 btnhvr rounded-circle bg-info mx-2'></span>
-        <span onClick={() => setColor('green')} className='p-3 btnhvr rounded-circle bg-success mx-2'></span >
-        </div> */}
         <Canvas id='main-canvas' style={{ height: '100%' }}>
           <group position={[0, 0, 0]}
-          // rotation={[Math.PI / 6, 0, 0]}
           >
             <XR store={store}>
+              <GestureHandler/>
               <ambientLight intensity={2} />
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
