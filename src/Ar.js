@@ -1,5 +1,5 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { XR, createXRStore } from '@react-three/xr';
+import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { IfInSessionMode, XR, createXRStore } from '@react-three/xr';
 import { Html, OrbitControls, useGLTF } from '@react-three/drei';
 import glb from './pizza.glb';
 import usdz from './Pizza.usdz';
@@ -71,19 +71,22 @@ function Ar({ setIsglview }) {
 
 
     return <group>
-    <primitive
-      ref={modelRef} object={scene}
-      rotation={[Math.PI / 10, 0, 0]}
-      scale={[2, 2, 2]}
-    // scale={scale}
-    />
-    <OrbitControls />
-  </group>
+      <primitive
+        ref={modelRef} object={scene}
+        rotation={[Math.PI / 10, 0, 0]}
+        scale={[2, 2, 2]}
+      // scale={scale}
+      />
+      <IfInSessionMode deny={['immersive-ar', 'immersive-vr']} >
+        <OrbitControls />
+    </IfInSessionMode>
+    </group>
   }
   const [color, setColor] = useState(null)
   console.log(setColor);
 
   const Arview = () => {
+
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     if (isIOS) {
       window.location.href = usdz;
@@ -98,7 +101,26 @@ function Ar({ setIsglview }) {
     setshowinfo(e => !e)
   }
   // console.log(setshowinfo);
+  const [isARSupported, setIsARSupported] = useState(null);
 
+  useCallback(() => {
+    async function checkSupport() {
+      if (navigator.xr && navigator.xr.isSessionSupported) {
+        try {
+          const supported = await navigator.xr.isSessionSupported('immersive-ar');
+          setIsARSupported(supported);
+        } catch (error) {
+          console.error('Error checking AR support:', error);
+          setIsARSupported(false);
+        }
+      } else {
+        setIsARSupported(false);
+      }
+    }
+
+    checkSupport();
+  }, []);
+  
   return (
     <Suspense fallback={<Loader />}>
       <div style={{ height: '100svh', position: 'relative' }} className='overflow-hidden'>
@@ -135,7 +157,7 @@ function Ar({ setIsglview }) {
         }
         <img style={{ width: "160px", zIndex: 9990 }} className='position-absolute top-0 rounded-2 start-0' src='/logo.png' alt='logo' />
         <GiExitDoor onClick={() => setIsglview(false)} size={40} style={{ zIndex: 9990, cursor: 'pointer' }} className='position-absolute d-none border top-0 border-black rounded-circle p-1 end-0 m-3' src='/logo.png' alt='logo' />
-        <button
+        {isARSupported && <button
           style={{
             padding: '7px 12px', bottom: "10px"
           }}
@@ -144,7 +166,7 @@ function Ar({ setIsglview }) {
           className='btn btn-info position-absolute start-50 translate-middle-x m-2'
         >
           View AR
-        </button>
+        </button>}
         {/* <CustomSlider colorItems={items} color={color} setColor={setColor} /> */}
         {/* <div style={{ zIndex: 9999 }} className='position-absolute mt-4 d-flex bg-transparent justify-content-center align-content-center w-100 top-0 start-50 translate-middle-x'>
         <span onClick={() => setColor(null)} className='p-3 btnhvr rounded-circle  mx-2'>X</span >
