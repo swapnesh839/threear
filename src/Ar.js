@@ -80,8 +80,11 @@ function Ar({ setIsglview }) {
   }
   const [color, setColor] = useState(null)
   console.log(setColor);
-  const GestureHandler = React.forwardRef(({ ref })=> {
+  const GestureHandler = React.forwardRef((props, ref)=> {
     const { controllers } = useXR();
+    // const { session } = useXR();
+    // console.log(session);
+    
     const modelRef = ref;
   
     // Pinch-to-zoom
@@ -208,7 +211,7 @@ function Ar({ setIsglview }) {
           <group position={[0, 0, 0]}
           >
             <XR store={store}>
-              <GestureHandler ref ={modelRef}/>
+              <GestureHandler ref={modelRef}/>
               <ambientLight intensity={2} />
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
