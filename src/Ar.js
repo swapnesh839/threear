@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import React, { Suspense,  useEffect, useRef, useState } from 'react';
 import { IfInSessionMode, XR, createXRStore } from '@react-three/xr';
 import { Html, OrbitControls, useGLTF } from '@react-three/drei';
 import glb from './pizza.glb';
@@ -79,7 +79,7 @@ function Ar({ setIsglview }) {
       />
       <IfInSessionMode deny={['immersive-ar', 'immersive-vr']} >
         <OrbitControls />
-    </IfInSessionMode>
+      </IfInSessionMode>
     </group>
   }
   const [color, setColor] = useState(null)
@@ -103,24 +103,27 @@ function Ar({ setIsglview }) {
   // console.log(setshowinfo);
   const [isARSupported, setIsARSupported] = useState(null);
 
-  useCallback(() => {
+  useEffect(() => {
     async function checkSupport() {
-      if (navigator.xr && navigator.xr.isSessionSupported) {
-        try {
-          const supported = await navigator.xr.isSessionSupported('immersive-ar');
-          setIsARSupported(supported);
-        } catch (error) {
-          console.error('Error checking AR support:', error);
-          setIsARSupported(false);
-        }
+      console.log(navigator.xr);
+      // console.log( navigator.xr?.isSessionSupported());
+      
+      if (navigator.xr ) {
+        setIsARSupported(true);
+        // try {
+        //   // const supported = await navigator.xr.isSessionSupported('immersive-ar');
+        // } catch (error) {
+        //   console.error('Error checking AR support:', error);
+        //   setIsARSupported(false);
+        // }
       } else {
         setIsARSupported(false);
       }
     }
-
-    checkSupport();
-  }, []);
   
+    checkSupport();
+  })
+
   return (
     <Suspense fallback={<Loader />}>
       <div style={{ height: '100svh', position: 'relative' }} className='overflow-hidden'>
