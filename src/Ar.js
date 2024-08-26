@@ -28,15 +28,10 @@ function Ar({ setIsglview }) {
   function Model({ color }) {
     const [scale, setScale] = useState([1, 1, 1]);
 
-    const { scene } = useGLTF(glb, true, (progress) => {
-      console.log(`Loading: ${progress.loaded} / ${progress.total}`);
-    });
+    const { scene } = useGLTF(glb, true);
     // console.log(scale);
 
-    useGLTF.preload()
-    // const [dragging, setDragging] = useState(false);
-    // const [initialPointerPosition, setInitialPointerPosition] = useState([0, 0]);
-
+    useGLTF.preload(glb)
     // Change the color of the model's material
     useEffect(() => {
       if (color) {
@@ -85,35 +80,33 @@ function Ar({ setIsglview }) {
   }
   const [color, setColor] = useState(null)
   console.log(setColor);
-  function GestureHandler() {
-    const { controllers,
-      //  update 
-      } = useXR();
-    const modelRef = useRef();
+  const GestureHandler = React.forwardRef(({ ref })=> {
+    const { controllers } = useXR();
+    const modelRef = ref;
   
     // Pinch-to-zoom
-    function handlePinch(event) {
+    const handlePinch = React.useCallback((event) => {
       if (event.type === 'pinch') {
         const scale = event.scale;
         modelRef.current.scale.set(scale, scale, scale);
       }
-    }
+    }, [modelRef]);
   
     // Drag-to-move
-    function handlePan(event) {
+    const handlePan = React.useCallback((event) => {
       if (event.type === 'pan') {
         const delta = new Vector3(event.deltaX, event.deltaY, 0);
         modelRef.current.position.add(delta.multiplyScalar(0.01));
       }
-    }
+    }, [modelRef]);
   
     // Rotate-to-spin
-    function handleRotate(event) {
+    const handleRotate = React.useCallback((event) => {
       if (event.type === 'rotate') {
         const rotation = event.rotation;
         modelRef.current.rotation.y += rotation * 0.01;
       }
-    }
+    }, [modelRef]);
   
     // Update gesture handlers on each frame
     React.useEffect(() => {
@@ -132,14 +125,10 @@ function Ar({ setIsglview }) {
           });
         };
       }
-    }, [controllers]);
+    }, [controllers, handlePinch, handlePan, handleRotate]);
   
-    return (
-      <group ref={modelRef}>
-        {/* Your 3D model or objects here */}
-      </group>
-    );
-  }
+    return null;
+  })
 
   const Arview = () => {
 
@@ -219,7 +208,7 @@ function Ar({ setIsglview }) {
           <group position={[0, 0, 0]}
           >
             <XR store={store}>
-              <GestureHandler/>
+              <GestureHandler ref ={modelRef}/>
               <ambientLight intensity={2} />
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, 5, 5]} />
               <directionalLight lookAt={[0, 0, 0]} intensity={2} position={[5, -5, 5]} />
