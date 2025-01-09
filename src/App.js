@@ -1,36 +1,40 @@
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import Ar from './Ar'
+import glb from './asset.glb';
+import usdz from './asset.usdz';
+import "./App.css"
+
 
 const App = () => {
-  const [isglview, setIsglview] = useState(false)
+  const [isglview, setIsglview] = useState(true)
 
-  useEffect(() => {
-    const element = document.documentElement;
+  // useEffect(() => {
+  //   const element = document.documentElement;
 
-    if (isglview) {
-      if (element.requestFullscreen) {
-        element.requestFullscreen();
-      } else if (element.webkitRequestFullscreen) { /* Safari */
-        element.webkitRequestFullscreen();
-      } else if (element.msRequestFullscreen) { /* IE11 */
-        element.msRequestFullscreen();
-      }
-    } else {
-      if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) { /* Safari */
-          document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { /* IE11 */
-          document.msExitFullscreen();
-        }
-      }
-    }
-  }, [isglview]);
+  //   if (isglview) {
+  //     if (element.requestFullscreen) {
+  //       element.requestFullscreen();
+  //     } else if (element.webkitRequestFullscreen) { /* Safari */
+  //       element.webkitRequestFullscreen();
+  //     } else if (element.msRequestFullscreen) { /* IE11 */
+  //       element.msRequestFullscreen();
+  //     }
+  //   } else {
+  //     if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+  //       if (document.exitFullscreen) {
+  //         document.exitFullscreen();
+  //       } else if (document.webkitExitFullscreen) { /* Safari */
+  //         document.webkitExitFullscreen();
+  //       } else if (document.msExitFullscreen) { /* IE11 */
+  //         document.msExitFullscreen();
+  //       }
+  //     }
+  //   }
+  // }, [isglview]);
 
   return (
     <React.Fragment>
-      {isglview ? <Ar setIsglview={setIsglview} /> :
+      {isglview ? <Ar setIsglview={setIsglview} glb={glb} usdz={usdz} /> :
         <div className='vw-100 vh-100 position-relative d-flex'>
           <p className='m-auto fw-bold fs-1 p-2 text-center text-capitalize'>Experience WebGl and AR with Us</p>
           <button
